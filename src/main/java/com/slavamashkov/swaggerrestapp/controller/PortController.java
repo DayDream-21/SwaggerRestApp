@@ -1,7 +1,7 @@
 package com.slavamashkov.swaggerrestapp.controller;
 
 import com.slavamashkov.swaggerrestapp.model.entity.Port;
-import com.slavamashkov.swaggerrestapp.service.PortService;
+import com.slavamashkov.swaggerrestapp.service.impl.PortServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -19,10 +19,10 @@ import java.util.List;
 @RequestMapping(value = "/ports", produces = "application/json")
 @Api(value = "/ports", tags = {"Порты"})
 public class PortController {
-    private final PortService portService;
+    private final PortServiceImpl portService;
 
     @Autowired
-    public PortController(PortService portService) {
+    public PortController(PortServiceImpl portService) {
         this.portService = portService;
     }
 

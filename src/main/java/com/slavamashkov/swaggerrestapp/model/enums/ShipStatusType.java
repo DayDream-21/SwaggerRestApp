@@ -1,7 +1,5 @@
 package com.slavamashkov.swaggerrestapp.model.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 public enum ShipStatusType {
     PORT,
     SEA;
