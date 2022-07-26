@@ -1,16 +1,16 @@
 package com.slavamashkov.swaggerrestapp.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
-@Getter
-@Setter
-@JsonIgnoreProperties("hibernateLazyInitializer")
 @Entity
 @Table(name = "ports", schema = "navy")
+@Getter
+@Setter
 public class Port {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,5 +21,9 @@ public class Port {
     private String name;
 
     @Column(name = "capacity", nullable = false)
-    private Integer capacity;
+    private int capacity;
+
+    @OneToMany(mappedBy = "port", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Ship> ships;
 }
