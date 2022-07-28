@@ -1,5 +1,6 @@
 package com.slavamashkov.swaggerrestapp.service.impl;
 
+import com.slavamashkov.swaggerrestapp.model.enums.Role;
 import com.slavamashkov.swaggerrestapp.model.wrappers.CrewMemberStatus;
 import com.slavamashkov.swaggerrestapp.model.entity.CrewMember;
 import com.slavamashkov.swaggerrestapp.model.entity.Ship;
@@ -35,11 +36,12 @@ public class CrewMemberServiceImpl implements CrewMemberService {
     // "Read" methods
     @Override
     public ResponseEntity<List<CrewMember>> readAllCrewMembers(String status) {
+        // Если статус не был передан, тогда возвращаем всех моряков без фильтрации
         if (status == null) {
             return ResponseEntity.ok(crewMemberRepository.findAll());
         }
 
-        // Если был передан статус, проверяем его правильность
+        // Если статус был передан, проверяем его правильность
         final Optional<CrewMemberStatusType> optionalCrewMemberStatusType =
                 Optional.ofNullable(CrewMemberStatusType.getStatusType(status));
 
@@ -108,11 +110,21 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
                             final Ship ship = optionalShip.get();
                             final Set<CrewMember> crewMembers = ship.getCrewMembers();
-                            // Если на корабле есть место и корабль находится в порту
+                            final boolean shipContainsCapitan = crewMembers
+                                    .stream()
+                                    .anyMatch(member -> member.getRole() == Role.CAPITAN);
+
+                            // Если моряк является капитаном, то проверяем есть ли на корабле уже один капитан
+                            if (crewMember.getRole() == Role.CAPITAN && shipContainsCapitan) {
+                                return ResponseEntity
+                                        .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                                        .body("Capitan is already on the ship");
+                            }
+                            // Если на корабле есть место, корабль находится в порту и
                             // тогда назначаем моряка на корабль, меняем ему статус на ON_SHIP
                             if ((crewMembers.size() < ship.getMaxCrewCapacity()) &&
-                                    (ship.getStatus() == ShipStatusType.PORT)) {
-
+                                (ship.getStatus() == ShipStatusType.PORT)
+                            ) {
                                 crewMember.setShip(ship);
                                 crewMember.setCrewMemberStatusType(CrewMemberStatusType.ON_SHIP);
 

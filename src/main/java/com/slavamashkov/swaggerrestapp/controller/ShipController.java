@@ -1,5 +1,6 @@
 package com.slavamashkov.swaggerrestapp.controller;
 
+import com.slavamashkov.swaggerrestapp.model.wrappers.NewShip;
 import com.slavamashkov.swaggerrestapp.model.wrappers.ShipStatus;
 import com.slavamashkov.swaggerrestapp.model.entity.CrewMember;
 import com.slavamashkov.swaggerrestapp.model.entity.Ship;
@@ -85,15 +86,14 @@ public class ShipController {
             @ApiResponse(code = 500, message = "Внутренняя ошибка")})
     public ResponseEntity<String> postShip(
             @ApiParam(
-                    value = "JSON-структура корабля",
+                    value = "JSON-структура проекта корабля",
                     name = "ship",
                     required = true
             )
-            @RequestBody final Ship ship
+            @RequestBody final NewShip newShip
     ) {
-        return shipService.createShip(ship);
+        return shipService.createShip(newShip);
     }
-
 
     @DeleteMapping("/{id}")
     @ApiOperation(

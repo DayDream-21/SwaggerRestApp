@@ -7,9 +7,11 @@ import io.swagger.annotations.ApiResponses;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @Api(value = "/health", tags = {"Проверка состояния сервиса"})
+@ApiIgnore
 public class HealthController {
     @GetMapping(value = "/health")
     @ApiOperation(

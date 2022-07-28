@@ -1,5 +1,6 @@
 package com.slavamashkov.swaggerrestapp.service.interfaces;
 
+import com.slavamashkov.swaggerrestapp.model.wrappers.NewShip;
 import com.slavamashkov.swaggerrestapp.model.wrappers.ShipStatus;
 import com.slavamashkov.swaggerrestapp.model.entity.CrewMember;
 import com.slavamashkov.swaggerrestapp.model.entity.Ship;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 public interface ShipService {
     // "Create" methods
-    ResponseEntity<String> createShip(Ship ship);
+    ResponseEntity<String> createShip(NewShip newShip);
 
     // "Read" methods
     ResponseEntity<List<Ship>> readAllShips(String status);

@@ -1,5 +1,6 @@
 package com.slavamashkov.swaggerrestapp.service.impl;
 
+import com.slavamashkov.swaggerrestapp.model.wrappers.NewShip;
 import com.slavamashkov.swaggerrestapp.model.wrappers.ShipStatus;
 import com.slavamashkov.swaggerrestapp.model.entity.CrewMember;
 import com.slavamashkov.swaggerrestapp.model.entity.Port;
@@ -15,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ShipServiceImpl implements ShipService {
@@ -33,38 +31,49 @@ public class ShipServiceImpl implements ShipService {
 
     // "Create" methods
     @Override
-    public ResponseEntity<String> createShip(Ship ship) {
-        if (ship == null || ship.getName() == null || ship.getPort() == null) {
+    public ResponseEntity<String> createShip(NewShip newShip) {
+        if (newShip == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        final Optional<Port> optionalPort = portRepository.findById(ship.getPort().getId());
-
-        if (optionalPort.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (newShip.getName() == null ||
+            newShip.getMinCrewCapacity() == null ||
+            newShip.getMaxCrewCapacity() == null ||
+            newShip.getPortId() == null
+        ) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        final int shipInPortCount = shipRepository.countAllByPortId(ship.getPort().getId());
+        if (isNameUnique(newShip)) {
+            final Optional<Port> optionalPort = portRepository.findById(newShip.getPortId());
 
-        if (shipInPortCount < optionalPort.get().getCapacity() && ship.getStatus().equals(ShipStatusType.PORT)) {
-            shipRepository.save(ship);
-
-            Optional<Ship> optionalLastInsertedShip = shipRepository.findAll()
-                    .stream()
-                    .max(Comparator.comparing(Ship::getId));
-
-            if (optionalLastInsertedShip.isPresent()) {
-                final JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("id", optionalLastInsertedShip.get().getId());
-
-                return ResponseEntity.ok(jsonObject.toString());
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            if (optionalPort.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+
+            final Port port = optionalPort.get();
+            final int shipInPortCount = port.getShips().size();
+
+            if (shipInPortCount < port.getCapacity()) {
+                Ship ship = Ship.builder()
+                        .name(newShip.getName())
+                        .minCrewCapacity(newShip.getMinCrewCapacity())
+                        .maxCrewCapacity(newShip.getMaxCrewCapacity())
+                        .port(port)
+                        .status(ShipStatusType.PORT)
+                        .build();
+
+                shipRepository.save(ship);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
+
         } else {
+            // Not unique name
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
+
+        return null;
     }
 
     // "Read" methods
@@ -227,5 +236,12 @@ public class ShipServiceImpl implements ShipService {
                         " was successfully deleted");
             }
         }
+    }
+
+    private boolean isNameUnique(NewShip newShip) {
+        return shipRepository
+                .findAll()
+                .stream()
+                .noneMatch(ship -> ship.getName().equals(newShip.getName()));
     }
 }
