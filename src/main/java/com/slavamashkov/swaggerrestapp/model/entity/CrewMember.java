@@ -3,8 +3,7 @@ package com.slavamashkov.swaggerrestapp.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.slavamashkov.swaggerrestapp.model.enums.CrewMemberStatusType;
 import com.slavamashkov.swaggerrestapp.model.enums.Role;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +11,9 @@ import javax.persistence.*;
 @Table(name = "crew_members", schema = "navy")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CrewMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

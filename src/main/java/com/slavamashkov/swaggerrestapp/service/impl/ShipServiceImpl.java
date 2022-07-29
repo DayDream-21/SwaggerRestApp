@@ -64,16 +64,16 @@ public class ShipServiceImpl implements ShipService {
                         .build();
 
                 shipRepository.save(ship);
+
+                return ResponseEntity.ok("New ship successfully created" +
+                        " in port with id=" + ship.getPort().getId());
             } else {
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
             }
-
         } else {
             // Not unique name
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
-
-        return null;
     }
 
     // "Read" methods
@@ -224,12 +224,17 @@ public class ShipServiceImpl implements ShipService {
         } else {
             // Если найден, то проверяем, где находится корабль
             Ship ship = optionalShip.get();
-            // Если в море, тогда мы не можем его удалить,
-            // выдаем ошибку 422 Unprocessable Entity
+            // Если в море, выдаем ошибку 422 Unprocessable Entity
             if (ship.getStatus() == ShipStatusType.SEA) {
                 return ResponseEntity
                         .status(HttpStatus.UNPROCESSABLE_ENTITY)
                         .body("Ship with id=" + id + " is currently at sea");
+            }
+            // Если на корабле все еще есть люди, выдаем ошибку 422 Unprocessable Entity
+            if (ship.getCrewMembers().size() > 0) {
+                return ResponseEntity
+                        .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                        .body("There are still people on the ship with id=" + id);
             } else {
                 shipRepository.deleteById(id);
                 return ResponseEntity.ok("Ship with id=" + id +

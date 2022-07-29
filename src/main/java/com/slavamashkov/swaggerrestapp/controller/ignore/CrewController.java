@@ -1,4 +1,4 @@
-package com.slavamashkov.swaggerrestapp.controller;
+package com.slavamashkov.swaggerrestapp.controller.ignore;
 
 import com.slavamashkov.swaggerrestapp.model.wrappers.CrewMemberStatus;
 import com.slavamashkov.swaggerrestapp.service.impl.CrewMemberServiceImpl;
@@ -27,10 +27,6 @@ public class CrewController {
             produces = "application/json",
             response = CrewMemberStatus.class
     )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 404, message = "Моряк не найден"),
-            @ApiResponse(code = 500, message = "Внутренняя ошибка")})
     public ResponseEntity<CrewMemberStatus> getCrewMemberStatus(
             @ApiParam(
                     value = "id моряка",
@@ -41,28 +37,5 @@ public class CrewController {
             @PathVariable(value = "id") final Long id
     ) {
         return crewMemberService.readCrewMemberStatus(id);
-    }
-
-    @DeleteMapping("/{id}")
-    @ApiOperation(
-            value = "Уволить моряка",
-            httpMethod = "DELETE",
-            produces = "application/json",
-            response = String.class
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 404, message = "Моряк не найден"),
-            @ApiResponse(code = 500, message = "Внутренняя ошибка")})
-    public ResponseEntity<String> deleteCrewMember(
-            @ApiParam(
-                    value = "id моряка",
-                    name = "id",
-                    required = true,
-                    example = "1"
-            )
-            @PathVariable(value = "id") final Long id
-    ) {
-        return crewMemberService.deleteCrewMember(id);
     }
 }

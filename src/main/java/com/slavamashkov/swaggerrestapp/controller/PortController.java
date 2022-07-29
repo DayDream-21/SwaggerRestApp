@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/ports", produces = "application/json")
-@Api(value = "/ports", tags = {"Порты"})
+@Api(value = "/ports", tags = {"Службы портов"})
 public class PortController {
     private final PortServiceImpl portService;
 

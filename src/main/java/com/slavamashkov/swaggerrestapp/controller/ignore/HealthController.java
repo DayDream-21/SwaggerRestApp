@@ -1,4 +1,4 @@
-package com.slavamashkov.swaggerrestapp.controller;
+package com.slavamashkov.swaggerrestapp.controller.ignore;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,10 +20,6 @@ public class HealthController {
             produces = "application/json",
             response = String.class
     )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ок"),
-            @ApiResponse(code = 500, message = "Внутренняя ошибка")
-    })
     public String getHealth() {
         final JSONObject jsonObject = new JSONObject();
 

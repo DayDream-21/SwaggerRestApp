@@ -6,8 +6,8 @@ import com.slavamashkov.swaggerrestapp.model.entity.CrewMember;
 import com.slavamashkov.swaggerrestapp.model.entity.Ship;
 import com.slavamashkov.swaggerrestapp.model.enums.CrewMemberStatusType;
 import com.slavamashkov.swaggerrestapp.model.enums.ShipStatusType;
+import com.slavamashkov.swaggerrestapp.model.wrappers.NewCrewMember;
 import com.slavamashkov.swaggerrestapp.repositories.CrewMemberRepository;
-import com.slavamashkov.swaggerrestapp.repositories.PortRepository;
 import com.slavamashkov.swaggerrestapp.repositories.ShipRepository;
 import com.slavamashkov.swaggerrestapp.service.interfaces.CrewMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,36 @@ public class CrewMemberServiceImpl implements CrewMemberService {
     }
 
     // "Create" methods
+    @Override
+    public ResponseEntity<String> createCrewMember(NewCrewMember newCrewMember) {
+        if (newCrewMember == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if (newCrewMember.getName() == null || newCrewMember.getRole() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        final Optional<Role> optionalRole = Optional.ofNullable(Role.getRole(newCrewMember.getRole()));
+
+        // Если была получена не правильная роль, тогда выдаем ошибку 400 Bad Request
+        if (optionalRole.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Unsupportable role");
+        } else {
+            CrewMember crewMember = CrewMember.builder()
+                    .name(newCrewMember.getName())
+                    .role(optionalRole.get())
+                    .crewMemberStatusType(CrewMemberStatusType.ON_LAND)
+                    .ship(null)
+                    .build();
+
+            crewMemberRepository.save(crewMember);
+
+            return ResponseEntity.ok("New crew member successfully registered");
+        }
+    }
 
     // "Read" methods
     @Override
@@ -184,11 +214,6 @@ public class CrewMemberServiceImpl implements CrewMemberService {
         return ResponseEntity.ok(optionalCrewMember.get().getCrewMemberStatusType().name());
     }
 
-    @Override
-    public ResponseEntity<String> updateCrewMemberRole(Long id, String role) {
-        return null;
-    }
-
     // "Delete" methods
     @Override
     public ResponseEntity<String> deleteCrewMember(Long id) {
@@ -196,21 +221,19 @@ public class CrewMemberServiceImpl implements CrewMemberService {
         // Если моряк не найден, тогда выдаем ошибку 404 Not Found
         if (optionalCrewMember.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        final CrewMember crewMember = optionalCrewMember.get();
+        // Если моряк находится на корабле
+        if (crewMember.getShip() != null &&
+            crewMember.getCrewMemberStatusType() == CrewMemberStatusType.ON_SHIP
+        ) {
+            return ResponseEntity
+                    .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body("Crew member with id=" + id + " is currently on the ship");
         } else {
-            // Если найден, то проверяем, где находится моряк
-            CrewMember crewMember = optionalCrewMember.get();
-            // Если в море, тогда мы не можем его удалить,
-            // выдаем ошибку 422 Unprocessable Entity
-            if (crewMember.getShip().getStatus() == ShipStatusType.SEA) {
-                return ResponseEntity
-                        .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                        .body("Crew member with id=" + id + " is currently at sea");
-            } else {
-                return ResponseEntity.ok("Crew member with id=" + id +
-                        " was successfully deleted");
-            }
+            return ResponseEntity.ok("Crew member with id=" + id +
+                    " was successfully deleted");
         }
     }
-
-
 }

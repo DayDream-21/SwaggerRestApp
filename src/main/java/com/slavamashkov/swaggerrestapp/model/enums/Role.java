@@ -4,9 +4,9 @@ public enum Role {
     CAPITAN,
     MATE;
 
-    public static Role getStatusType(String statusInString) {
+    public static Role getRole(String roleInString) {
         for (Role role : Role.values()) {
-            if (role.name().equals(statusInString)) {
+            if (role.name().equals(roleInString)) {
                 return role;
             }
         }

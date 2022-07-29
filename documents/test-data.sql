@@ -15,9 +15,7 @@ VALUES
     (5, 2, 'Восток',      'PORT', 3),
     (5, 2, 'Кудесник',    'PORT', 3),
     (5, 2, 'Арктика',     'PORT', 3),
-    (5, 2, 'Москва',      'PORT', 2),
-    (5, 2, 'Беда',        'PORT', 2),
-    (5, 2, 'Красивый',    'PORT', 2);
+    (5, 2, 'Москва',      'PORT', 2);
 
 INSERT INTO navy.crew_members (status, name, role, ship_id)
 VALUES
