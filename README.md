@@ -1,3 +1,11 @@
+## Запуск проекта
+
+* В application.properties поменять параметр spring.datasource.url=jdbc:postgresql://localhost:[your url]/postgres, а также
+  username и password для выбранного url
+* Базы данных автоматически создадутся при запуске
+* После этого запустить sql-скрипт test-data.sql из папки documents
+* Перейти по ссылке http://localhost:8080/swagger-ui/#/ для взаимодействия с приложением при помощи UI swagger'а
+
 ## Область автоматизации
 
 * Автоматизация процесса мореплавания в небольшом государстве
