@@ -82,6 +82,7 @@
     </dependencies>
 
     <build>
+        <finalName>ports_application</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "ports", schema = "navy")
+@Table(name = "ports")
 @Getter
 @Setter
 public class Port {

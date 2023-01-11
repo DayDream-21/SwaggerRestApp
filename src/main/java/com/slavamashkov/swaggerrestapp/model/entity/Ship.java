@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "ships", schema = "navy")
+@Table(name = "ships")
 @Getter
 @Setter
 @Builder
