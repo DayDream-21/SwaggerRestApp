@@ -1,51 +1,49 @@
-## Запуск проекта
+## Project Launch
 
-* В application.properties поменять параметр spring.datasource.url=jdbc:postgresql://localhost:[your url]/postgres, а также
-  username и password для выбранного url
-* Базы данных автоматически создадутся при запуске
-* После этого запустить sql-скрипт test-data.sql из папки documents
-* Перейти по ссылке http://localhost:8080/swagger-ui/#/ для взаимодействия с приложением при помощи UI swagger'а
+* Clone project https://github.com/DayDream-21/SwaggerRestApp
+* Open console in project folder and execute command **docker-compose up** (of course you will need docker)
+* Go to http://localhost:8080/swagger-ui/#/ to interact with the application using the UI swagger
 
-## Область автоматизации
+## Scope of automation.
 
-* Автоматизация процесса мореплавания в небольшом государстве
-* 3 порта, каждый со своей вместимостью
-* Изначально 10 кораблей
-* Могут строиться новые корабли, а старые списываться в утиль
+* Automation of the seafaring process in a small state
+* 3 ports, each with its own capacity
+* Initially 10 ships
+* New ships can be built and old ships can be scrapped
 
-##  Пользователи и функции
+## Users and functions
 
-* **Морской регистр**: списание и ввод новых кораблей, регистрация и увольнение моряков, просмотр актуальных данных о 
-  портах и кораблях
-* **Службы портов**: анализ загрузки порта
-* **Капитаны**: введение информации о местоположении судна, назначение и снятие моряка с корабля
-* **Береговая охрана**: актуальные сведения о кораблях в море
+* **Maritime Registry**: decommissioning and entering new ships, registering and discharging sailors, viewing up-to-date data on 
+  ports and ships
+* **Port Services**: port load analysis
+* **Captains**: entering ship's location, assigning and removing a seafarer
+* **Coast Guard**: up-to-date information about ships at sea
 
-## Ограничения
+## Restrictions
 
-### Морской регистр
-* Морской регистр ведет перечень профессиональных моряков. У каждого из них есть роль капитан (CAPITAN) или матрос
+### Maritime Register
+* The Maritime Register maintains a list of professional seafarers. Each has the role of captain (CAPITAN) or sailor
   (MATE)
-* Морской регистр может уволить моряка, только если тот находится на суше (ON_LAND)
-* Морской регистр не может списать корабль если на нем находятся моряки
-* Морской регистр назначает на корабль капитана (**Пока возможно назначение моряков любой роли, но до тех пор, пока на 
-  корабле не окажется один капитан**)
+* The ship's registry can only fire a seafarer if the seafarer is on land (ON_LAND)
+* The ship's registry cannot decommission a ship with seafarers on board
+* The ship's registry assigns a captain to the ship (**As long as it is possible to assign sailors of any role, but until there is 
+  the ship has one captain**)
 
-### Капитаны и моряки
-* Капитан на корабле может быть только один
-* Капитан назначает на корабль матросов, а также он может отправить матроса на отдых при заходе в порт (PORT) (**Пока
-  возможно назначение моряков любой роли, но до тех пор, пока на корабле не окажется один капитан**)
-* Назначение (ON_SHIP) и снятие (ON_LAND) матросов осуществляется только в порту. Для кораблей в море (SEA) изменение
-  команды невозможно
-* Капитан отдает команды кораблю, следовательно, корабль не может выйти в море (SEA) без капитана
-* Есть максимальное и минимальное число членов команды при котором корабль может покинуть порт
-* Любой моряк может быть приписан только к 1 кораблю или не быть приписанным ни к какому
-* Береговая охрана хочет знать не только о кораблях в море, но и о том сколько на них людей и какие у них роли
+### Captains and seamen
+* There can only be one captain on a ship
+* The captain assigns sailors to the ship, and he can also send a sailor to rest when in port (PORT) (**For now
+  it is possible to assign sailors of any role, but as long as there is not one captain on the ship**)
+* Assigning (ON_SHIP) and removing (ON_LAND) sailors is only done in port. For ships at sea (SEA) changing
+  command is not possible
+* Captain gives commands to ship, hence ship cannot go to sea (SEA) without captain
+* There is a maximum and minimum number of crew members at which the ship can leave the port
+* Any sailor can only be assigned to 1 ship or not be assigned to any ship
+* Coast Guard wants to know not only about the ships at sea, but also how many people are on them and what their roles are
 
-## Допущения 
+## Assumptions 
 
-* Отсутствует разделение прав доступа пользователей к информации
-* Все корабли строятся по одному проекту 
-* Отличие кораблей только в размере минимальной и максимальной команды
-* Корабли строятся по одному (не может быть одновременного ввода 2+ кораблей) 
-* Все места для швартовки в портах одного размера под типовой проект судна (любой корабль занимает только 1 место)
+* No separation of user access rights to information
+* All ships are built according to the same design 
+* Ships differ only in the size of minimum and maximum crew
+* Ships are built one at a time (no 2+ ships can be entered simultaneously) 
+* All mooring places in ports are of the same size for a typical ship design (any ship occupies only 1 place)
